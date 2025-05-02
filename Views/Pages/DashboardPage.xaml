@@ -1,0 +1,71 @@
+﻿<Page
+    x:Class="CapyCareTest.Views.Pages.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:CapyCareTest.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" xmlns:ViewModels="clr-namespace:CapyCareTest.ViewModels.Pages"
+    Title="DashboardPage"
+    d:DataContext="{d:DesignInstance local:DashboardPage,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+   
+
+
+
+    <ScrollViewer>
+        <StackPanel Margin="20" VerticalAlignment="Top" HorizontalAlignment="Stretch" Orientation="Vertical" >
+            
+            <WrapPanel ItemWidth="250" ItemHeight="130" HorizontalAlignment="Stretch">
+                <ui:Card Width="250" Height="130">
+                    <StackPanel>
+                        <TextBlock Text="Капибар всего" FontWeight="Bold" />
+                        <TextBlock Text="{Binding CapybaraCount}" FontSize="32" FontWeight="SemiBold" />
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card Width="250" Height="130">
+                    <StackPanel>
+                        <TextBlock Text="Проблемы со здоровьем" FontWeight="Bold" />
+                        <TextBlock Text="{Binding ActiveHealthIssuesCount}" FontSize="32" FontWeight="SemiBold" />
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card Width="250" Height="130">
+                    <StackPanel>
+                        <TextBlock Text="Кормлений сегодня" FontWeight="Bold" />
+                        <TextBlock Text="{Binding FeedingTodayCount}" FontSize="32" FontWeight="SemiBold" />
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card Width="250" Height="130">
+                    <StackPanel>
+                        <TextBlock Text="Без осмотра 30+ дней" FontWeight="Bold" />
+                        <TextBlock Text="{Binding NoCheckupCapybarasCount}" FontSize="32" FontWeight="SemiBold" />
+                    </StackPanel>
+                </ui:Card>
+            </WrapPanel>
+
+            <ui:Card Margin="0 5 0 0">
+                <StackPanel>
+                    <TextBlock Text="Последняя запись осмотра" FontSize="20" FontWeight="Bold" Margin="0 0 0 10" />
+                    <StackPanel Orientation="Vertical" >
+                        <TextBlock Text="{Binding LatestHealthRecord.Capybara.Name, StringFormat=Капибара: {0}}" />
+                        <TextBlock Text="{Binding LatestHealthRecord.CheckDate, StringFormat=Дата: {0:dd.MM.yyyy}}" />
+                        <TextBlock Text="{Binding LatestHealthRecord.Diagnosis, StringFormat=Диагноз: {0}}" />
+                        <TextBlock Text="{Binding LatestHealthRecord.Treatment, StringFormat=Лечение: {0}}" />
+                        <TextBlock Text="{Binding LatestHealthRecord.Vet.Name, StringFormat=Ветеринар: {0}}" />
+                    </StackPanel>
+                </StackPanel>
+            </ui:Card>
+        </StackPanel>
+    </ScrollViewer>
+
+</Page>
