@@ -60,9 +60,9 @@ namespace CapyCareTest
 
                 services.AddSingleton<DashboardPage>();
                 services.AddSingleton<DashboardViewModel>();
-               
+
                 services.AddSingleton<SettingsPage>();
-                
+
 
                 services.AddSingleton<CapybarasPage>();
                 services.AddSingleton<CapybarasViewModel>();
@@ -78,6 +78,14 @@ namespace CapyCareTest
 
                 services.AddSingleton<AddHealthRecordPage>();
                 services.AddSingleton<AddHealthRecordViewModel>();
+
+                services.AddSingleton<CapybaraDetailsPage>();
+                services.AddSingleton<CapybaraDetailsViewModel>();
+
+
+                services.AddSingleton<AddFeedingSchedulesPage>();
+                services.AddSingleton<AddFeedingSchedulesViewModel>();
+
 
 
             }).Build();
@@ -99,7 +107,7 @@ namespace CapyCareTest
 
             // Получаем сервисы
             var db = Services.GetRequiredService<CapyCareContext>();
-            var currentUserService = Services.GetRequiredService<CurrentUserService>();
+            CurrentUserService currentUserService = Services.GetRequiredService<CurrentUserService>();
 
             // Показываем окно входа
             var loginWindow = new LoginWindow(db);

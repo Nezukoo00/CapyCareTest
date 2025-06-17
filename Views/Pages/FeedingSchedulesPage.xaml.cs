@@ -13,18 +13,30 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Wpf.Ui.Abstractions.Controls;
 
 namespace CapyCareTest.Views.Pages
 {
     /// <summary>
     /// Логика взаимодействия для FeedingSchedulesPage.xaml
     /// </summary>
-    public partial class FeedingSchedulesPage : Page
+    public partial class FeedingSchedulesPage : Page, INavigationAware
     {
-        public FeedingSchedulesPage()
+        private readonly FeedingSchedulesViewModel _vm;
+
+        public FeedingSchedulesPage(FeedingSchedulesViewModel vm)
         {
             InitializeComponent();
-            DataContext = new FeedingSchedulesViewModel();
+            _vm = vm;
+            DataContext = vm;
         }
+
+        // Будет вызвано каждый раз при навигации *на* эту страницу
+        public async Task OnNavigatedToAsync()
+        {
+            await _vm.LoadAsync();
+        }
+
+        public Task OnNavigatedFromAsync() => Task.CompletedTask;
     }
 }

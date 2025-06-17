@@ -4,10 +4,10 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:CapyCareTest.Views.Pages" 
-      xmlns:pages="clr-namespace:CapyCareTest.ViewModels.Pages" d:DataContext="{d:DesignInstance Type=pages:HealthRecordsViewModel}"
+      
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="HealthRecordsPage">
+      Title="Записи о медосмотрах">
 
     <Grid Margin="20">
         <StackPanel>
@@ -42,6 +42,17 @@
                                          Binding="{Binding Treatment}" />
                     <DataGridTextColumn Header="Ветеринар"
                                          Binding="{Binding Vet.Name}" />
+                    <DataGridTemplateColumn Header="Действия">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                        Content="Удалить"
+                        Padding="4,2"
+                        Command="{Binding DataContext.DeleteRecordCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                        CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
 

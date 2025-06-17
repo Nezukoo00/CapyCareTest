@@ -38,6 +38,10 @@ namespace CapyCareTest.ViewModels.Windows
                 Content = "Enclosures", 
                 Icon = new SymbolIcon {Symbol = SymbolRegular.HomeMore20 }, 
                 TargetPageType = typeof(EnclosuresPage) },
+            new NavigationViewItem() {
+                Content = "CapybaraDetailsPage",
+                Icon = new SymbolIcon {Symbol = SymbolRegular.HomeMore20 },
+                TargetPageType = typeof(CapybaraDetailsPage) },
         };
 
         [ObservableProperty]

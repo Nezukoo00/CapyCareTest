@@ -5,13 +5,14 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:CapyCareTest.Views.Pages"
       mc:Ignorable="d"
-      xmlns:ViewModels="clr-namespace:CapyCareTest.ViewModels.Pages"
+      xmlns:ViewModels="clr-namespace:CapyCareTest.ViewModels.Pages" d:DataContext="{d:DesignInstance Type=ViewModels:FeedingSchedulesViewModel}"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="FeedingSchedulesPage">
+      Title="Рсаписание кормления">
     <Grid Margin="20">
         <StackPanel Orientation="Vertical">
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10" >
+                
                 <!-- Выбор капибары -->
                 <ComboBox Width="200"
                           ItemsSource="{Binding Capybaras}"
@@ -22,6 +23,10 @@
                 <ComboBox Width="150"
                           ItemsSource="{Binding TimeFilters}"
                           SelectedItem="{Binding SelectedTimeFilter}" />
+                <Button
+                  Content="➕ Добавить новое расписание"
+                  Width="250"
+                  Command="{Binding AddScheduleCommand}" /> 
             </StackPanel>
 
             <!-- Таблица кормлений -->
@@ -32,9 +37,9 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Капибара" Binding="{Binding Capybara.Name}" />
                     <DataGridTextColumn Header="Тип корма" Binding="{Binding FoodType}" />
-                    <DataGridTextColumn Header="Порция" Binding="{Binding Portion}" />
+                    <DataGridTextColumn Header="Порция" Binding="{Binding PortionSize}" />
                     <DataGridTextColumn Header="Время" Binding="{Binding FeedingTime}" />
-                    <DataGridTextColumn Header="Сотрудник" Binding="{Binding Employee.Name}" />
+                    <DataGridTextColumn Header="Сотрудник" Binding="{Binding ResponsibleEmployee.Name}" />
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>

@@ -3,12 +3,127 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:CapyCareTest.Views.Pages"
+      xmlns:local="clr-namespace:CapyCareTest.Views.Pages" xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" xmlns:pages="clr-namespace:CapyCareTest.ViewModels.Pages" d:DataContext="{d:DesignInstance Type=pages:CapybaraDetailsViewModel}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
+     
       Title="CapybaraDetailsPage">
 
-    <Grid>
-        
-    </Grid>
+    <ScrollViewer Margin="20">
+        <StackPanel >
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,20" >
+                <Button Content="🖨 Печать"
+              Width="100"
+              Command="{Binding PrintCommand}" />
+                <Button Content="📥 Экспорт в Excel"
+              Width="160"
+              Command="{Binding ExportToExcelCommand}" />
+            </StackPanel>
+
+            <!-- 0. Выбор капибары -->
+            <ComboBox
+              Width="250"
+              ItemsSource="{Binding AllCapybaras}"
+              DisplayMemberPath="Name"
+              SelectedItem="{Binding SelectedCapybara, Mode=TwoWay}"
+               />
+
+            <!-- 2. Общая информация -->
+            <Grid Margin="0,20,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                    <TextBlock Text="Пол:" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding SelectedCapybara.Gender}"/>
+
+                    <TextBlock Text="Дата рождения:" FontWeight="SemiBold" Margin="0,10,0,0"/>
+                    <TextBlock Text="{Binding SelectedCapybara.BirthDate, StringFormat=d}"/>
+
+                    <TextBlock Text="Дата прибытия:" FontWeight="SemiBold" Margin="0,10,0,0"/>
+                    <TextBlock Text="{Binding SelectedCapybara.ArrivalDate, StringFormat=d}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Вольер:" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding SelectedCapybara.Enclosure.Name}"/>
+
+                    <TextBlock Text="Усыновитель:" FontWeight="SemiBold" Margin="0,10,0,0"/>
+                    <TextBlock Text="{Binding SelectedCapybara.Adopter.FullName, FallbackValue=–}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- 3. Последний осмотр -->
+            <ui:Card Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Последний осмотр"
+                               FontSize="18" FontWeight="SemiBold"
+                               Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding LastHealthRecord.CheckDate, StringFormat=Дата: {0:d}}"/>
+                    <TextBlock Text="{Binding LastHealthRecord.Diagnosis, StringFormat=Диагноз: {0}}"/>
+                    <TextBlock Text="{Binding LastHealthRecord.Treatment, StringFormat=Лечение: {0}}"/>
+                    <TextBlock Text="{Binding LastHealthRecord.Vet.Name, StringFormat=Ветеринар: {0}}"/>
+                    
+                </StackPanel>
+            </ui:Card>
+
+            <!-- 4. Ближайшие кормления -->
+            <TextBlock Text="Ближайшие кормления"
+                       FontSize="18" FontWeight="SemiBold"
+                       Margin="0,0,0,10"/>
+            <DataGrid ItemsSource="{Binding UpcomingFeedings}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      Height="150">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Время"
+                                        Binding="{Binding FeedingTime, StringFormat=HH:mm}"/>
+                    <DataGridTextColumn Header="Корм"
+                                        Binding="{Binding FoodType}"/>
+                    <DataGridTextColumn Header="Порция"
+                                        Binding="{Binding PortionSize}"/>
+                    <DataGridTextColumn Header="Сотр."
+                                        Binding="{Binding ResponsibleEmployee.Name}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- 5. События -->
+            <TextBlock Text="Участие в событиях"
+                       FontSize="18" FontWeight="SemiBold"
+                       Margin="0,20,0,10"/>
+            <ItemsControl ItemsSource="{Binding EventParticipations}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <Run Text="• "/>
+                            <Run Text="{Binding Event.EventName}"/>
+                            <Run Text=" ("/>
+                            <Run Text="{Binding Event.Date, StringFormat=d}"/>
+                            <Run Text=") — "/>
+                            <Run Text="{Binding Notes}"/>
+                        </TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- 6. Последние посетители -->
+            <TextBlock Text="Последние посетители"
+                       FontSize="18" FontWeight="SemiBold"
+                       Margin="0,20,0,10"/>
+            <ItemsControl ItemsSource="{Binding RecentVisitors}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <Run Text="• "/>
+                            <Run Text="{Binding Name}"/>
+                            <Run Text=" — "/>
+                            <Run Text="{Binding VisitDate, StringFormat=d}"/>
+                        </TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+    </ScrollViewer>
 </Page>

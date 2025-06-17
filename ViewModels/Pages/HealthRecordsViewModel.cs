@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace CapyCareTest.ViewModels.Pages
 {
+   
     public class HealthRecordsViewModel : INotifyPropertyChanged
     {
         readonly CapyCareContext _db;
@@ -41,11 +42,36 @@ namespace CapyCareTest.ViewModels.Pages
             get => _endDate;
             set { _endDate = value; OnProp(); FilterRecords(); }
         }
+        public IRelayCommand<HealthRecord> DeleteRecordCommand { get; }
 
         public HealthRecordsViewModel(CapyCareContext db)
         {
             _db = db;
+            DeleteRecordCommand = new RelayCommand<HealthRecord>(async rec => await DeleteRecordAsync(rec));
             _ = LoadAsync();
+        }
+
+        private async Task DeleteRecordAsync(HealthRecord toDelete)
+        {
+            if (toDelete == null) return;
+
+            // Подтверждение удаления
+            var result = MessageBox.Show(
+                $"Удалить запись от {toDelete.CheckDate:dd.MM.yyyy} у {toDelete.Capybara?.Name}?",
+                "Подтвердите удаление",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            // Удаляем из БД
+            _db.HealthRecords.Remove(toDelete);
+            await _db.SaveChangesAsync();
+
+            // Удаляем из локальных коллекций
+            AllRecords.Remove(toDelete);
+            FilterRecords();
         }
 
         private async Task LoadAsync()
@@ -57,6 +83,8 @@ namespace CapyCareTest.ViewModels.Pages
                 .ToListAsync();
             FilterRecords();
         }
+
+
 
         public void ResetFilters()
         {
@@ -86,6 +114,27 @@ namespace CapyCareTest.ViewModels.Pages
 
             FilteredRecords = q.ToList();
             OnProp(nameof(FilteredRecords));
+        }
+
+        public async Task LoadAllAsync()
+        {
+            AllRecords = await _db.HealthRecords
+                .Include(r => r.Capybara)
+                .Include(r => r.Vet)
+                .OrderByDescending(r => r.CheckDate)
+                .ToListAsync();
+            FilterRecords();
+        }
+
+        public async Task LoadForCapybaraAsync(Guid capybaraId)
+        {
+            AllRecords = await _db.HealthRecords
+                .Where(r => r.CapybaraId == capybaraId)
+                .Include(r => r.Capybara)
+                .Include(r => r.Vet)
+                .OrderByDescending(r => r.CheckDate)
+                .ToListAsync();
+            FilterRecords();
         }
 
     }

@@ -34,5 +34,19 @@ namespace CapyCareTest.Views.Pages
         {
             _vm.ResetFilters();
         }
+        public async Task OnNavigatedToAsync(object parameter)
+        {
+            if (parameter is Capybara capy)
+            {
+                await _vm.LoadForCapybaraAsync(capy.CapybaraId);
+            }
+            else
+            {
+                await _vm.LoadAllAsync();
+            }
+        }
+
+        public Task OnNavigatedFromAsync() => Task.CompletedTask;
+
     }
 }

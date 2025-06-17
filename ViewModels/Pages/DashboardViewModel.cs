@@ -89,8 +89,7 @@ namespace CapyCareTest.ViewModels.Pages
 
             ActiveHealthIssuesCount = latestPerCapy.Count(r => r != null && !string.IsNullOrWhiteSpace(r.Diagnosis));
 
-            // Предположим, в FeedingSchedules есть поле CheckDate (или DateOnly) для даты кормления.
-            // Если нет, то этот счётчик пропускаем или реализуем после добавления даты в модель.
+            
             //FeedingTodayCount = await db.FeedingSchedules
             //    .CountAsync(f => f.FeedingTime.HasValue && DateOnly.FromDateTime(DateTime.Today) == DateOnly.FromTimeOnly(f.FeedingTime.Value));
 

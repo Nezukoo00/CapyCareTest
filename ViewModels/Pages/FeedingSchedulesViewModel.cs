@@ -8,70 +8,64 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CapyCareTest.Data;
 using Microsoft.EntityFrameworkCore;
+using Wpf.Ui;
+using CapyCareTest.Views.Pages;
 
 namespace CapyCareTest.ViewModels.Pages
 {
     public class FeedingSchedulesViewModel : INotifyPropertyChanged
     {
-        private readonly CapyCareContext _db = new();
+        readonly CapyCareContext _db = new();
+        public event PropertyChangedEventHandler? PropertyChanged;
+        void OnProp([CallerMemberName] string p = "") =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
 
-        public ObservableCollection<Capybara> Capybaras { get; set; } = new();
-        public ObservableCollection<FeedingSchedule> FeedingSchedules { get; set; } = new();
-
-        public ObservableCollection<string> TimeFilters { get; set; } = new() { "Все", "Сегодня", "Утро", "Вечер" };
+        public ObservableCollection<Capybara> Capybaras { get; } = new();
+        public ObservableCollection<FeedingSchedule> FeedingSchedules { get; } = new();
+        public ObservableCollection<string> TimeFilters { get; } = new() { "Все", "Сегодня", "Утро", "Вечер" };
 
         private Capybara? _selectedCapybara;
         public Capybara? SelectedCapybara
         {
             get => _selectedCapybara;
-            set
-            {
-                _selectedCapybara = value;
-                OnPropertyChanged();
-                ApplyFilters();
-            }
+            set { _selectedCapybara = value; OnProp(); ApplyFilters(); }
         }
 
         private string _selectedTimeFilter = "Все";
         public string SelectedTimeFilter
         {
             get => _selectedTimeFilter;
-            set
-            {
-                _selectedTimeFilter = value;
-                OnPropertyChanged();
-                ApplyFilters();
-            }
+            set { _selectedTimeFilter = value; OnProp(); ApplyFilters(); }
         }
 
         private ObservableCollection<FeedingSchedule> _filteredFeedingSchedules = new();
         public ObservableCollection<FeedingSchedule> FilteredFeedingSchedules
         {
             get => _filteredFeedingSchedules;
-            set
-            {
-                _filteredFeedingSchedules = value;
-                OnPropertyChanged();
-            }
+            set { _filteredFeedingSchedules = value; OnProp(); }
         }
 
-        public FeedingSchedulesViewModel()
+        public IRelayCommand AddScheduleCommand { get; }
+        private readonly INavigationService _nav;
+
+        public FeedingSchedulesViewModel(INavigationService nav)
         {
-            LoadData();
+            _nav = nav;
+            AddScheduleCommand = new RelayCommand(() => _nav.Navigate(typeof(AddFeedingSchedulesPage)));
+            // убрали LoadData() из конструктора
         }
 
-        private async void LoadData()
+        public async Task LoadAsync()
         {
-            var capybaras = await _db.Capybaras.ToListAsync();
-            foreach (var c in capybaras)
+            Capybaras.Clear();
+            foreach (var c in await _db.Capybaras.OrderBy(c => c.Name).ToListAsync())
                 Capybaras.Add(c);
 
-            var feeding = await _db.FeedingSchedules
-                .Include(f => f.Capybara)
-                .Include(f => f.ResponsibleEmployee)
-                .ToListAsync();
-
-            foreach (var f in feeding)
+            FeedingSchedules.Clear();
+            foreach (var f in await _db.FeedingSchedules
+                        .Include(f => f.Capybara)
+                        .Include(f => f.ResponsibleEmployee)
+                        .ToListAsync())
                 FeedingSchedules.Add(f);
 
             ApplyFilters();
@@ -79,26 +73,20 @@ namespace CapyCareTest.ViewModels.Pages
 
         private void ApplyFilters()
         {
-            var query = FeedingSchedules.AsEnumerable();
-
+            var q = FeedingSchedules.AsEnumerable();
             if (SelectedCapybara != null)
-                query = query.Where(f => f.CapybaraId == SelectedCapybara.CapybaraId);
+                q = q.Where(f => f.CapybaraId == SelectedCapybara.CapybaraId);
 
             var now = DateTime.Now;
-
-            query = SelectedTimeFilter switch
+            q = SelectedTimeFilter switch
             {
-                "Сегодня" => query.Where(f => f.FeedingTime.Date == now.Date),
-                "Утро" => query.Where(f => f.FeedingTime.TimeOfDay < TimeSpan.FromHours(12)),
-                "Вечер" => query.Where(f => f.FeedingTime.TimeOfDay >= TimeSpan.FromHours(18)),
-                _ => query
+                "Сегодня" => q.Where(f => f.FeedingTime.Date == now.Date),
+                "Утро" => q.Where(f => f.FeedingTime.TimeOfDay < TimeSpan.FromHours(12)),
+                "Вечер" => q.Where(f => f.FeedingTime.TimeOfDay >= TimeSpan.FromHours(18)),
+                _ => q
             };
 
-            FilteredFeedingSchedules = new ObservableCollection<FeedingSchedule>(query);
+            FilteredFeedingSchedules = new ObservableCollection<FeedingSchedule>(q);
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

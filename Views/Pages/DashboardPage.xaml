@@ -6,8 +6,8 @@
     xmlns:local="clr-namespace:CapyCareTest.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" xmlns:ViewModels="clr-namespace:CapyCareTest.ViewModels.Pages"
-    Title="DashboardPage"
-    d:DataContext="{d:DesignInstance local:DashboardPage,
+    Title="Главная страница"
+    d:DataContext="{d:DesignInstance ViewModels:DashboardViewModel,
                                      IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
     d:DesignWidth="800"

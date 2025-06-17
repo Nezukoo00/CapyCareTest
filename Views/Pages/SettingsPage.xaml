@@ -33,8 +33,8 @@
         </StackPanel>
 
         <!-- Правая колонка: видео, картинка и подпись -->
-        <StackPanel Grid.Column="1" VerticalAlignment="Top">
-            <!-- Видео -->
+        <!--<StackPanel Grid.Column="1" VerticalAlignment="Top">
+            --><!-- Видео --><!--
             <MediaElement
                 x:Name="DemoVideo"
                 Source="pack://siteoforigin:,,,/Assets/capyvideo.mp4"
@@ -44,7 +44,7 @@
                 Height="200"
                 Margin="0,0,0,10"/>
 
-            <!-- Картинка -->
+            --><!-- Картинка --><!--
             <Image
                 Source="pack://siteoforigin:,,,/Assets/doggie.png" 
                 Stretch="Uniform"
@@ -54,13 +54,13 @@
             
 
 
-            <!-- Подпись -->
+            --><!-- Подпись --><!--
             <TextBlock
                 Text="поставьте 3 хотя бы"
                 FontSize="16"
                 FontWeight="SemiBold"
                 HorizontalAlignment="Center"/>
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 
 </Page>
