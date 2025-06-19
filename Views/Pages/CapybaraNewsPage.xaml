@@ -1,0 +1,167 @@
+﻿<Page x:Class="CapyCareTest.Views.Pages.CapybaraNewsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CapyCareTest.Views.Pages" 
+      xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf" xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" xmlns:converters="clr-namespace:CapyCareTest.Converters" xmlns:pages="clr-namespace:CapyCareTest.ViewModels.Pages" d:DataContext="{d:DesignInstance Type=pages:CapybaraNewsViewModel}"
+      mc:Ignorable="d" 
+      xmlns:models="clr-namespace:CapyCareTest.Models" xmlns:ui1="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
+      Title="CapybaraNewsPage"
+      d:DesignHeight="700" d:DesignWidth="900">
+
+    <Page.Resources>
+        <SolidColorBrush x:Key="SkyBlueBrush" Color="#87CEEB"/>
+        <SolidColorBrush x:Key="WhiteBrush" Color="White"/>
+        <converters:BooleanToVisibilityConverterInverted x:Key="BooleanToVisibilityConverterInverted"/>
+        <Style x:Key="InvisibleButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="NewsCardStyle" TargetType="ui:CardControl">
+            <!-- Явное сброс встроенных стилей -->
+            <Setter Property="Background" Value="{StaticResource WhiteBrush}"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0,10"/>
+
+            <!-- Переопределение шаблона для полного контроля -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ui:CardControl">
+                        <Border 
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource SkyBlueBrush}"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    
+    
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Button Content="Test News API" 
+                Click="TestApi_Click"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"/>
+
+        <!-- Счетчик статей -->
+        <ui:TextBlock Grid.Row="1"
+                      Margin="0,0,0,20"
+                      Text="{Binding News.TotalArticles, StringFormat='Найдено статей: {0}'}"/>
+
+        
+
+        <!-- Контейнер новостей -->
+        <ScrollViewer Grid.Row="2"
+                      >
+            <ItemsControl ItemsSource="{Binding News.Articles}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:CapyNewsArticle}">
+                        <Button 
+                        Command="{Binding DataContext.OpenArticleInAppCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}}}"
+                        CommandParameter="{Binding ArticleUrl}"
+                        Style="{StaticResource InvisibleButtonStyle}">
+                            <ui:CardControl Margin="0,10" Padding="15" Style="{StaticResource NewsCardStyle}">
+                                <ui:CardControl.InputBindings>
+                                    <MouseBinding 
+                                    MouseAction="LeftClick" 
+                                    Command="{Binding DataContext.OpenArticleInAppCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}}}"
+                                    CommandParameter="{Binding ArticleUrl}"/>
+                                </ui:CardControl.InputBindings>
+                                <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" 
+                                        CornerRadius="4" 
+                                        Margin="0,0,15,0"
+                                       >
+                                    <Image Source="{Binding ImageSource}" 
+                                           Stretch="UniformToFill"
+                                           Height="150"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <ui:TextBlock FontTypography="Subtitle" 
+                                                  FontWeight="DemiBold"
+                                                  Text="{Binding Title}"
+                                                  TextWrapping="Wrap"/>
+
+                                    <ui:TextBlock Margin="0,6,0,0"
+                                                  Text="{Binding Description}"
+                                                  TextTrimming="CharacterEllipsis"
+                                                  TextWrapping="Wrap"
+                                                  MaxHeight="60"/>
+
+                                    <ui:TextBlock Margin="0,10,0,0" 
+                                                  >
+                                        <Run Text="{Binding Source}"/>
+                                        <Run Text=" | "/>
+                                        <Run Text="{Binding PublishedDate, StringFormat='dd.MM.yyyy'}"/>
+                                    </ui:TextBlock>
+                                        <TextBlock Margin="0,5,0,0" 
+                                           Foreground="Blue"
+                                           TextDecorations="Underline"
+                                           Cursor="Hand"
+                                           HorizontalAlignment="Left">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" 
+                                              Command="{Binding DataContext.OpenArticleCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}}}"
+                                              CommandParameter="{Binding ArticleUrl}"/>
+                                            </TextBlock.InputBindings>
+                                            <Run Text="Читать статью полностью"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                            </Grid>
+                        </ui:CardControl>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+
+
+
+
+
+
+</Page>

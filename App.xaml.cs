@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Wpf.Ui.DependencyInjection;
 using CapyCareTest.Data;
 
+
 namespace CapyCareTest
 {
     /// <summary>
@@ -85,6 +86,10 @@ namespace CapyCareTest
 
                 services.AddSingleton<AddFeedingSchedulesPage>();
                 services.AddSingleton<AddFeedingSchedulesViewModel>();
+
+                services.AddSingleton<CapybaraNewsPage>();
+                services.AddSingleton<CapybaraNewsViewModel>();
+                services.AddSingleton<NewsService>();
 
 
 
